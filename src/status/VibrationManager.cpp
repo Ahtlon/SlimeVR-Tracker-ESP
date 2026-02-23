@@ -1,6 +1,6 @@
 /*
 	SlimeVR Code is placed under the MIT license
-	Copyright (c) 2022 TheDevMinerTV
+	Copyright (c) 2024 SlimeVR Contributors
 
 	Permission is hereby granted, free of charge, to any person obtaining a copy
 	of this software and associated documentation files (the "Software"), to deal
@@ -20,29 +20,53 @@
 	OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 	THE SOFTWARE.
 */
-#pragma once
 
-#include <arduino-timer.h>
+#include "VibrationManager.h"
 
-#include "batterymonitor.h"
-#include "configuration/Configuration.h"
-#include "network/connection.h"
-#include "network/manager.h"
-#include "network/wifihandler.h"
-#include "network/wifiprovisioning.h"
-#include "sensors/SensorManager.h"
-#include "status/LEDManager.h"
-#include "status/StatusManager.h"
-#include "status/VibrationManager.h"
+namespace SlimeVR {
 
-extern Timer<> globalTimer;
-extern SlimeVR::LEDManager ledManager;
-extern SlimeVR::VibrationManager vibrationManager;
-extern SlimeVR::Status::StatusManager statusManager;
-extern SlimeVR::Configuration::Configuration configuration;
-extern SlimeVR::Sensors::SensorManager sensorManager;
-extern SlimeVR::Network::Manager networkManager;
-extern SlimeVR::Network::Connection networkConnection;
-extern BatteryMonitor battery;
-extern SlimeVR::WiFiNetwork wifiNetwork;
-extern SlimeVR::WifiProvisioning wifiProvisioning;
+void VibrationManager::setup() {
+	if (!m_Enabled) {
+		m_Logger.info("Vibration motor disabled (pin not configured)");
+		return;
+	}
+
+	pinMode(m_Pin, OUTPUT);
+	digitalWrite(m_Pin, LOW);
+	m_Logger.info("Vibration motor initialized on pin %d", m_Pin);
+}
+
+void VibrationManager::vibrate(uint16_t durationMs) {
+	if (!m_Enabled) {
+		return;
+	}
+
+	if (durationMs == 0) {
+		// Turn off vibration
+		digitalWrite(m_Pin, LOW);
+		m_IsVibrating = false;
+		m_VibrationEndTime = 0;
+		return;
+	}
+
+	// Start vibration
+	digitalWrite(m_Pin, HIGH);
+	m_IsVibrating = true;
+	m_VibrationEndTime = millis() + durationMs;
+	m_Logger.debug("Vibration triggered for %d ms", durationMs);
+}
+
+void VibrationManager::update() {
+	if (!m_Enabled || !m_IsVibrating) {
+		return;
+	}
+
+	// Check if vibration duration has elapsed
+	if (millis() >= m_VibrationEndTime) {
+		digitalWrite(m_Pin, LOW);
+		m_IsVibrating = false;
+		m_VibrationEndTime = 0;
+	}
+}
+
+}  // namespace SlimeVR
