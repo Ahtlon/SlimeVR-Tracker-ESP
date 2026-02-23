@@ -48,8 +48,9 @@ public:
 
 private:
 	uint8_t m_Pin = VIBRATION_PIN;
-	bool m_Enabled = m_Pin >= 0 && m_Pin < 255;
-	unsigned long m_VibrationEndTime = 0;
+	bool m_Enabled = m_Pin < 255;
+	unsigned long m_VibrationStartTime = 0;
+	uint16_t m_VibrationDuration = 0;
 	bool m_IsVibrating = false;
 
 	Logging::Logger m_Logger = Logging::Logger("VibrationManager");

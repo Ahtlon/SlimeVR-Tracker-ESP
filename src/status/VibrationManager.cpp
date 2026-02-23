@@ -45,14 +45,15 @@ void VibrationManager::vibrate(uint16_t durationMs) {
 		// Turn off vibration
 		digitalWrite(m_Pin, LOW);
 		m_IsVibrating = false;
-		m_VibrationEndTime = 0;
+		m_VibrationDuration = 0;
 		return;
 	}
 
 	// Start vibration
 	digitalWrite(m_Pin, HIGH);
 	m_IsVibrating = true;
-	m_VibrationEndTime = millis() + durationMs;
+	m_VibrationStartTime = millis();
+	m_VibrationDuration = durationMs;
 	m_Logger.debug("Vibration triggered for %d ms", durationMs);
 }
 
@@ -61,11 +62,12 @@ void VibrationManager::update() {
 		return;
 	}
 
-	// Check if vibration duration has elapsed
-	if (millis() >= m_VibrationEndTime) {
+	// Check if vibration duration has elapsed (overflow-safe)
+	unsigned long elapsed = millis() - m_VibrationStartTime;
+	if (elapsed >= m_VibrationDuration) {
 		digitalWrite(m_Pin, LOW);
 		m_IsVibrating = false;
-		m_VibrationEndTime = 0;
+		m_VibrationDuration = 0;
 	}
 }
 
