@@ -48,7 +48,7 @@ public:
 
 private:
 	uint8_t m_Pin = VIBRATION_PIN;
-	bool m_Enabled = m_Pin < 255;
+	bool m_Enabled = false;
 	unsigned long m_VibrationStartTime = 0;
 	uint16_t m_VibrationDuration = 0;
 	bool m_IsVibrating = false;

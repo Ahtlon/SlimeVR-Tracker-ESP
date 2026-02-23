@@ -26,6 +26,8 @@
 namespace SlimeVR {
 
 void VibrationManager::setup() {
+	m_Enabled = (m_Pin < 255);
+
 	if (!m_Enabled) {
 		m_Logger.info("Vibration motor disabled (pin not configured)");
 		return;
