@@ -101,6 +101,24 @@ Firmware can work with both ESP8266 and ESP32. Please edit `defines.h` and set y
 
   - Calibration data is written to the flash of your MCU and is unique for each BMI160, keep that in mind if you have detachable aux trackers.
 
+## Vibration Motor Support
+
+The firmware supports triggering a 3V vibration motor for haptic feedback in VR applications.
+
+### Configuration
+
+To enable vibration motor support:
+
+1. Connect a 3V vibration motor to a free GPIO pin on your ESP8266/ESP32
+2. Configure the pin in `src/defines.h`:
+   ```cpp
+   #define VIBRATION_PIN 4  // Replace 4 with your chosen GPIO pin
+   ```
+
+### Communication Protocol
+
+The vibration motor is controlled via UDP packets using the SlimeVR network protocol. For detailed protocol specification and usage examples, see [VIBRATION_PROTOCOL.md](VIBRATION_PROTOCOL.md).
+
 ## Uploading On Linux
 
 Follow the instructions in this link [PlatformIO](https://docs.platformio.org/en/latest//faq.html#platformio-udev-rules), this should solve any permission denied errors

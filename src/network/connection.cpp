@@ -689,8 +689,24 @@ void Connection::update() {
 			sendHeartbeat();
 			break;
 
-		case ReceivePacketType::Vibrate:
+		case ReceivePacketType::Vibrate: {
+			// Vibrate packet structure:
+			// Bytes 0-2: Packet ID (3 bytes)
+			// Byte 3: Packet type (1 byte) = 2 (Vibrate)
+			// Bytes 4-11: Packet number (8 bytes, BigEndian uint64)
+			// Bytes 12-13: Duration in milliseconds (2 bytes, BigEndian uint16)
+			if (len < 14) {
+				m_Logger.warn("Invalid vibrate packet: too short");
+				break;
+			}
+
+			// Extract duration (BigEndian uint16)
+			uint16_t duration = (static_cast<uint16_t>(m_Packet[12]) << 8) | m_Packet[13];
+			
+			vibrationManager.vibrate(duration);
+			m_Logger.debug("Vibrate command received: %d ms", duration);
 			break;
+		}
 
 		case ReceivePacketType::Handshake:
 			// handled above

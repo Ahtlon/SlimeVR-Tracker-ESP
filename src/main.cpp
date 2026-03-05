@@ -38,6 +38,7 @@ Timer<> globalTimer;
 SlimeVR::Logging::Logger logger("SlimeVR");
 SlimeVR::Sensors::SensorManager sensorManager;
 SlimeVR::LEDManager ledManager;
+SlimeVR::VibrationManager vibrationManager;
 SlimeVR::Status::StatusManager statusManager;
 SlimeVR::Configuration::Configuration configuration;
 SlimeVR::Network::Manager networkManager;
@@ -103,6 +104,7 @@ void setup() {
 	statusManager.setStatus(SlimeVR::Status::LOADING, true);
 
 	ledManager.setup();
+	vibrationManager.setup();
 	configuration.setup();
 
 	SerialCommands::setUp();
@@ -169,6 +171,7 @@ void loop() {
 
 	battery.Loop();
 	ledManager.update();
+	vibrationManager.update();
 	I2CSCAN::update();
 #ifdef TARGET_LOOPTIME_MICROS
 	long elapsed = (micros() - loopTime);

@@ -1,6 +1,6 @@
 /*
 	SlimeVR Code is placed under the MIT license
-	Copyright (c) 2022 TheDevMinerTV
+	Copyright (c) 2024 SlimeVR Contributors
 
 	Permission is hereby granted, free of charge, to any person obtaining a copy
 	of this software and associated documentation files (the "Software"), to deal
@@ -20,29 +20,42 @@
 	OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 	THE SOFTWARE.
 */
-#pragma once
+#ifndef SLIMEVR_VIBRATIONMANAGER_H
+#define SLIMEVR_VIBRATIONMANAGER_H
 
-#include <arduino-timer.h>
+#include <Arduino.h>
 
-#include "batterymonitor.h"
-#include "configuration/Configuration.h"
-#include "network/connection.h"
-#include "network/manager.h"
-#include "network/wifihandler.h"
-#include "network/wifiprovisioning.h"
-#include "sensors/SensorManager.h"
-#include "status/LEDManager.h"
-#include "status/StatusManager.h"
-#include "status/VibrationManager.h"
+#include "../globals.h"
+#include "../logging/Logger.h"
 
-extern Timer<> globalTimer;
-extern SlimeVR::LEDManager ledManager;
-extern SlimeVR::VibrationManager vibrationManager;
-extern SlimeVR::Status::StatusManager statusManager;
-extern SlimeVR::Configuration::Configuration configuration;
-extern SlimeVR::Sensors::SensorManager sensorManager;
-extern SlimeVR::Network::Manager networkManager;
-extern SlimeVR::Network::Connection networkConnection;
-extern BatteryMonitor battery;
-extern SlimeVR::WiFiNetwork wifiNetwork;
-extern SlimeVR::WifiProvisioning wifiProvisioning;
+namespace SlimeVR {
+
+class VibrationManager {
+public:
+	void setup();
+
+	/*!
+	 *  @brief Triggers the vibration motor for a specified duration
+	 *  @param durationMs Duration in milliseconds (0-65535)
+	 */
+	void vibrate(uint16_t durationMs);
+
+	/*!
+	 *  @brief Updates vibration state (non-blocking)
+	 *  Should be called in main loop
+	 */
+	void update();
+
+private:
+	uint8_t m_Pin = VIBRATION_PIN;
+	bool m_Enabled = false;
+	unsigned long m_VibrationStartTime = 0;
+	uint16_t m_VibrationDuration = 0;
+	bool m_IsVibrating = false;
+
+	Logging::Logger m_Logger = Logging::Logger("VibrationManager");
+};
+
+}  // namespace SlimeVR
+
+#endif

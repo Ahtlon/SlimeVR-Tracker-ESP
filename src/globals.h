@@ -76,3 +76,7 @@
 #ifndef UPDATE_NAME
 #define UPDATE_NAME ""
 #endif
+
+#ifndef VIBRATION_PIN
+#define VIBRATION_PIN 255  // Disabled by default (255 is invalid pin)
+#endif
