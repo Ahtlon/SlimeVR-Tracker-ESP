@@ -1,4 +1,25 @@
-# SlimeVR Tracker firmware for ESP
+# SlimeVR Tracker firmware for ESP with added haptics
+
+## WARNING
+This fork is vibe coded slop and purely for my own use. I successfully used it with a Wemos D1 with pin D7(GPIO13) and a standart 3v vibration motor.
+
+## Vibration Motor Support
+
+The firmware supports triggering a 3V vibration motor for haptic feedback in VR applications.
+
+### Configuration
+
+To enable vibration motor support:
+
+1. Connect a 3V vibration motor to a free GPIO pin on your ESP8266/ESP32
+2. Configure the pin in `src/defines.h`:
+   ```cpp
+   #define VIBRATION_PIN 4  // Replace 4 with your chosen GPIO pin
+   ```
+
+### Communication Protocol
+
+The vibration motor is controlled via UDP packets using the SlimeVR network protocol. For detailed protocol specification and usage examples, see [VIBRATION_PROTOCOL.md](VIBRATION_PROTOCOL.md).
 
 Firmware for ESP8266 / ESP32 microcontrollers and different IMU sensors to use them as a vive-like trackers in VR.
 
@@ -65,7 +86,7 @@ Firmware can work with both ESP8266 and ESP32. Please edit `defines.h` and set y
     > The LED will be lit continuously. If you have the tracker connected via USB and open the serial console, you will see text prompts in addition to the LEDs. You can only calibrate 1 IMU at a time.
 
     Flip it back up while the LED is still solid. Wait a few seconds, do not touch the device.
-    
+
   - **Step 1: It will flash 3 times when gyroscope calibration begins.**
 
     > If done incorrectly, this step is the most likely source of constant drift.
@@ -80,9 +101,9 @@ Firmware can work with both ESP8266 and ESP32. Please edit `defines.h` and set y
     > If you are unable to keep it on a flat surface without touching, press the device against a wall, it does not have to be absolutely perfect.
 
     **There will be two very short blinks when each position is recorded.**
-    
+
     Rotate the device 90 or 180 degrees in any direction. It should be on a different side each time. Continue to rotate until all 6 sides have been recorded.
-    
+
     The last position has a long flash when recorded, indicating exit from calibration mode.
 
   #### Additional info for BMI160
@@ -101,23 +122,6 @@ Firmware can work with both ESP8266 and ESP32. Please edit `defines.h` and set y
 
   - Calibration data is written to the flash of your MCU and is unique for each BMI160, keep that in mind if you have detachable aux trackers.
 
-## Vibration Motor Support
-
-The firmware supports triggering a 3V vibration motor for haptic feedback in VR applications.
-
-### Configuration
-
-To enable vibration motor support:
-
-1. Connect a 3V vibration motor to a free GPIO pin on your ESP8266/ESP32
-2. Configure the pin in `src/defines.h`:
-   ```cpp
-   #define VIBRATION_PIN 4  // Replace 4 with your chosen GPIO pin
-   ```
-
-### Communication Protocol
-
-The vibration motor is controlled via UDP packets using the SlimeVR network protocol. For detailed protocol specification and usage examples, see [VIBRATION_PROTOCOL.md](VIBRATION_PROTOCOL.md).
 
 ## Uploading On Linux
 
